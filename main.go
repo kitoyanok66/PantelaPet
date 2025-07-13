@@ -15,7 +15,8 @@ type Task struct {
 }
 
 type TaskRequest struct {
-	Name string `json:"name"`
+	Name   string `json:"name"`
+	Status string `json:"status"`
 }
 
 var tasks = []Task{}
@@ -33,10 +34,40 @@ func postTasks(c echo.Context) error {
 	task := Task{
 		ID:     uuid.New().String(),
 		Name:   req.Name,
-		Status: "In process",
+		Status: req.Status,
 	}
 	tasks = append(tasks, task)
 	return c.JSON(http.StatusCreated, task)
+}
+
+func patchTasks(c echo.Context) error {
+	id := c.Param("id")
+
+	var req TaskRequest
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid request"})
+	}
+
+	for i, task := range tasks {
+		if task.ID == id {
+			tasks[i].Name = req.Name
+			tasks[i].Status = req.Status
+			return c.JSON(http.StatusOK, tasks[i])
+		}
+	}
+	return c.JSON(http.StatusBadRequest, map[string]string{"error": "Task not found"})
+}
+
+func deleteTasks(c echo.Context) error {
+	id := c.Param("id")
+
+	for i, task := range tasks {
+		if task.ID == id {
+			tasks = append(tasks[:i], tasks[i+1:]...)
+			return c.NoContent(http.StatusNoContent)
+		}
+	}
+	return c.JSON(http.StatusBadRequest, map[string]string{"error": "Task not found"})
 }
 
 func main() {
@@ -47,6 +78,8 @@ func main() {
 
 	e.GET("/tasks", getTasks)
 	e.POST("/tasks", postTasks)
+	e.PATCH("/tasks/:id", patchTasks)
+	e.DELETE("tasks/:id", deleteTasks)
 
 	e.Start("localhost:8080")
 }
