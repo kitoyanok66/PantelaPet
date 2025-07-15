@@ -1,7 +1,6 @@
 package db
 
 import (
-	taskservice "PantelaPet/internal/taskService"
 	"log"
 
 	"gorm.io/driver/postgres"
@@ -11,7 +10,7 @@ import (
 var db *gorm.DB
 
 func InitDB() (*gorm.DB, error) {
-	dsn := "host=localhost user=postgres password=pantelapet dbname=pantelapet port=5432 sslmode=disable"
+	dsn := "host=localhost user=postgres password=postgres dbname=pantelapet port=5432 sslmode=disable"
 	var err error
 
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
@@ -19,9 +18,9 @@ func InitDB() (*gorm.DB, error) {
 		log.Fatalf("Could not connect to database: %v", err)
 	}
 
-	if err := db.AutoMigrate(&taskservice.Task{}); err != nil {
-		log.Fatalf("Could not migrate: %v", err)
-	}
+	// if err := db.AutoMigrate(&taskservice.Task{}); err != nil {
+	// 	log.Fatalf("Could not migrate: %v", err)
+	// }
 
 	return db, nil
 }
