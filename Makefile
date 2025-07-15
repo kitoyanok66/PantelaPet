@@ -15,7 +15,11 @@ migrate:
 # Откат миграций
 migrate-down:
 	$(MIGRATE) down
+
+# Генерация кода из OpenAPI спецификации
+gen:
+	oapi-codegen -config openapi/.openapi -include-tags tasks -package tasks openapi/openapi.yaml > ./internal/web/tasks/api.gen.go
 	
 # для удобства добавим команду run, которая будет запускать наше приложение
 run:
-	go run cmd/app/main.go
+	go run cmd/main.go
