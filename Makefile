@@ -19,6 +19,10 @@ migrate-down:
 # Генерация кода из OpenAPI спецификации
 gen:
 	oapi-codegen -config openapi/.openapi -include-tags tasks -package tasks openapi/openapi.yaml > ./internal/web/tasks/api.gen.go
+
+# Lint
+lint:
+	golangci-lint run --out-format=colored-line-number
 	
 # для удобства добавим команду run, которая будет запускать наше приложение
 run:
