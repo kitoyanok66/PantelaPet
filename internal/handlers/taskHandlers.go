@@ -44,7 +44,6 @@ func (h *TaskHandler) PostTasks(_ context.Context, request tasks.PostTasksReques
 		IsDone: *taskRequest.IsDone,
 	}
 	createdTask, err := h.service.CreateTask(taskToCreate)
-
 	if err != nil {
 		return nil, err
 	}
