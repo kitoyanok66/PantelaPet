@@ -35,7 +35,7 @@ func (s *taskService) CreateTask(req TaskRequest) (Task, error) {
 	}
 
 	task := Task{
-		ID:     uuid.New().String(),
+		ID:     uuid.NewString(),
 		Task:   req.Task,
 		IsDone: req.IsDone,
 	}
