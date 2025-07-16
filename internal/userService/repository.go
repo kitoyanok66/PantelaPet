@@ -1,6 +1,8 @@
 package userservice
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 // Основные методы CRUD - Create, Read, Update, Delete
 

@@ -28,6 +28,7 @@ func (h *TaskHandler) GetTasks(_ context.Context, _ tasks.GetTasksRequestObject)
 			Id:     &tsk.ID,
 			Task:   &tsk.Task,
 			IsDone: &tsk.IsDone,
+			UserId: &tsk.UserID,
 		}
 		response = append(response, task)
 	}
@@ -42,6 +43,7 @@ func (h *TaskHandler) PostTasks(_ context.Context, request tasks.PostTasksReques
 	taskToCreate := taskservice.TaskRequest{
 		Task:   *taskRequest.Task,
 		IsDone: *taskRequest.IsDone,
+		UserID: *taskRequest.UserId,
 	}
 	createdTask, err := h.service.CreateTask(taskToCreate)
 	if err != nil {
@@ -52,6 +54,7 @@ func (h *TaskHandler) PostTasks(_ context.Context, request tasks.PostTasksReques
 		Id:     &createdTask.ID,
 		Task:   &createdTask.Task,
 		IsDone: &createdTask.IsDone,
+		UserId: &createdTask.UserID,
 	}
 
 	return response, nil
@@ -65,6 +68,7 @@ func (h *TaskHandler) PatchTasksId(_ context.Context, request tasks.PatchTasksId
 	taskToUpdate := taskservice.TaskRequest{
 		Task:   *taskRequest.Task,
 		IsDone: *taskRequest.IsDone,
+		UserID: *taskRequest.UserId,
 	}
 	updatedTask, err := h.service.UpdateTask(taskID, taskToUpdate)
 	if err != nil {
@@ -75,6 +79,7 @@ func (h *TaskHandler) PatchTasksId(_ context.Context, request tasks.PatchTasksId
 		Id:     &updatedTask.ID,
 		Task:   &updatedTask.Task,
 		IsDone: &updatedTask.IsDone,
+		UserId: &updatedTask.UserID,
 	}
 
 	return response, nil
@@ -89,4 +94,28 @@ func (h *TaskHandler) DeleteTasksId(_ context.Context, request tasks.DeleteTasks
 	}
 
 	return tasks.DeleteTasksId204Response{}, nil
+}
+
+// GetUsersIdTasks implements tasks.StrictServerInterface.
+func (h *TaskHandler) GetUsersIdTasks(_ context.Context, request tasks.GetUsersIdTasksRequestObject) (tasks.GetUsersIdTasksResponseObject, error) {
+	userID := request.Id
+
+	tasksForUser, err := h.service.GetTasksForUser(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	response := tasks.GetUsersIdTasks200JSONResponse{}
+
+	for _, tsk := range tasksForUser {
+		task := tasks.Task{
+			Id:     &tsk.ID,
+			Task:   &tsk.Task,
+			IsDone: &tsk.IsDone,
+			UserId: &userID,
+		}
+		response = append(response, task)
+	}
+
+	return response, nil
 }

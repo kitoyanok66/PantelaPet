@@ -14,6 +14,11 @@ import (
 	strictecho "github.com/oapi-codegen/runtime/strictmiddleware/echo"
 )
 
+// Error defines model for Error.
+type Error struct {
+	Error *string `json:"error,omitempty"`
+}
+
 // User defines model for User.
 type User struct {
 	Email    *string `json:"email,omitempty"`
@@ -166,6 +171,15 @@ func (response PostUsers201JSONResponse) VisitPostUsersResponse(w http.ResponseW
 	return json.NewEncoder(w).Encode(response)
 }
 
+type PostUsers422JSONResponse Error
+
+func (response PostUsers422JSONResponse) VisitPostUsersResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(422)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
 type DeleteUsersIdRequestObject struct {
 	Id string `json:"id"`
 }
@@ -196,6 +210,15 @@ type PatchUsersId200JSONResponse User
 func (response PatchUsersId200JSONResponse) VisitPatchUsersIdResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type PatchUsersId422JSONResponse Error
+
+func (response PatchUsersId422JSONResponse) VisitPatchUsersIdResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(422)
 
 	return json.NewEncoder(w).Encode(response)
 }

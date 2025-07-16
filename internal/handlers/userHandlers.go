@@ -45,7 +45,10 @@ func (h *UserHandler) PostUsers(_ context.Context, request users.PostUsersReques
 	}
 	createdUser, err := h.service.CreateUser(userToCreate)
 	if err != nil {
-		return nil, err
+		errMsg := err.Error()
+		return users.PostUsers422JSONResponse{
+			Error: &errMsg,
+		}, nil
 	}
 
 	response := users.PostUsers201JSONResponse{
@@ -68,7 +71,10 @@ func (h *UserHandler) PatchUsersId(_ context.Context, request users.PatchUsersId
 	}
 	updatedUser, err := h.service.UpdateUser(userID, userToUpdate)
 	if err != nil {
-		return nil, err
+		errMsg := err.Error()
+		return users.PatchUsersId422JSONResponse{
+			Error: &errMsg,
+		}, nil
 	}
 
 	response := users.PatchUsersId200JSONResponse{
