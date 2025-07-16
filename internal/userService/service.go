@@ -58,9 +58,9 @@ func (s *userService) validateUserRequest(req UserRequest) error {
 }
 
 func (s *userService) CreateUser(req UserRequest) (User, error) {
-	// if err := s.validateUserRequest(req); err != nil {
-	// 	return User{}, nil
-	// }
+	if err := s.validateUserRequest(req); err != nil {
+		return User{}, nil
+	}
 
 	user := User{
 		ID:       uuid.NewString(),
@@ -91,9 +91,9 @@ func (s *userService) UpdateUser(id string, req UserRequest) (User, error) {
 		return User{}, errors.New("user ID is required")
 	}
 
-	// if err := s.validateUserRequest(req); err != nil {
-	// 	return User{}, nil
-	// }
+	if err := s.validateUserRequest(req); err != nil {
+		return User{}, nil
+	}
 
 	user := User{
 		ID:       id,
