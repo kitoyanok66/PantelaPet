@@ -33,6 +33,19 @@ func (s *userService) validateUserRequest(req UserRequest) error {
 		return errors.New("invalid email format")
 	}
 
+	var hasLetterEm, hasDigitEm bool
+	for _, ch := range req.Password {
+		switch {
+		case unicode.IsLetter(ch):
+			hasLetterEm = true
+		case unicode.IsDigit(ch):
+			hasDigitEm = true
+		}
+	}
+	if !hasLetterEm || !hasDigitEm {
+		return errors.New("password must contain both letters and digits")
+	}
+
 	if len(req.Password) < 8 {
 		return errors.New("password must be at least 8 characters long")
 	}
@@ -41,16 +54,16 @@ func (s *userService) validateUserRequest(req UserRequest) error {
 		return errors.New("password must not contain spaces")
 	}
 
-	var hasLetter, hasDigit bool
+	var hasLetterPass, hasDigitPass bool
 	for _, ch := range req.Password {
 		switch {
 		case unicode.IsLetter(ch):
-			hasLetter = true
+			hasLetterPass = true
 		case unicode.IsDigit(ch):
-			hasDigit = true
+			hasDigitPass = true
 		}
 	}
-	if !hasLetter || !hasDigit {
+	if !hasLetterPass || !hasDigitPass {
 		return errors.New("password must contain both letters and digits")
 	}
 
